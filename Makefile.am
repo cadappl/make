@@ -21,6 +21,8 @@ ACLOCAL_AMFLAGS	=  -I config
 
 MAKE_HOST =	@MAKE_HOST@
 
+STACK_SIZE = -Wl,--stack,10000000
+
 # Only process if target is MS-Windows
 if WINDOWSENV
   MAYBE_W32 =	w32
@@ -50,9 +52,15 @@ noinst_HEADERS = commands.h dep.h filedef.h job.h make.h rule.h variable.h \
 		debug.h getopt.h gettext.h hash.h
 
 make_LDADD =	@LIBOBJS@ @ALLOCA@ $(GLOBLIB) @GETLOADAVG_LIBS@ @LIBINTL@
+# Only process if target is CYGWIN
+if CYGWINENV
+    make_LDFLAGS = $(STACK_SIZE)
+endif
+
 # Only process if target is MS-Windows
 if WINDOWSENV
     make_LDADD += $(W32LIB)
+    make_LDFLAGS = $(STACK_SIZE)
 endif
 
 man_MANS =	make.1

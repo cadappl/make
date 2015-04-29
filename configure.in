@@ -372,10 +372,17 @@ AC_DEFINE_UNQUOTED(MAKE_HOST,"$host",[Build host information.])
 MAKE_HOST="$host"
 AC_SUBST(MAKE_HOST)
 
+cygwin_target_env=no
+AM_CONDITIONAL([CYGWINENV], false)
+
 w32_target_env=no
 AM_CONDITIONAL([WINDOWSENV], false)
 
 case "$host" in
+  *-*-cygwin*)
+    AM_CONDITIONAL(CYGWINENV, true)
+    cygwin_target_env=yes
+    ;;
   *-*-mingw32)
     AM_CONDITIONAL(WINDOWSENV, true)
     w32_target_env=yes
