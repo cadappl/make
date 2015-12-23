@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.  */
 #include <io.h>
 #endif
 
-extern int try_implicit_rule PARAMS ((struct file *file, unsigned int depth));
+extern int try_implicit_rule (struct file *file, unsigned int depth);
 
 
 /* The test for circular dependencies is based on the 'updating' bit in
@@ -60,13 +60,14 @@ unsigned int commands_started = 0;
 /* Current value for pruning the scan of the goal chain (toggle 0/1).  */
 static unsigned int considered;
 
-static int update_file PARAMS ((struct file *file, unsigned int depth));
-static int update_file_1 PARAMS ((struct file *file, unsigned int depth));
-static int check_dep PARAMS ((struct file *file, unsigned int depth, FILE_TIMESTAMP this_mtime, int *must_make_ptr));
-static int touch_file PARAMS ((struct file *file));
-static void remake_file PARAMS ((struct file *file));
-static FILE_TIMESTAMP name_mtime PARAMS ((char *name));
-static int library_search PARAMS ((char **lib, FILE_TIMESTAMP *mtime_ptr));
+static int update_file (struct file *file, unsigned int depth);
+static int update_file_1 (struct file *file, unsigned int depth);
+static int check_dep (struct file *file, unsigned int depth,
+                      FILE_TIMESTAMP this_mtime, int *must_make_ptr);
+static int touch_file (struct file *file);
+static void remake_file (struct file *file);
+static FILE_TIMESTAMP name_mtime (char *name);
+static int library_search (char **lib, FILE_TIMESTAMP *mtime_ptr);
 
 
 /* Remake all the goals in the `struct dep' chain GOALS.  Return -1 if nothing
@@ -237,7 +238,7 @@ update_goal_chain (struct dep *goals)
 		lastgoal->next = g->next;
 
 	      /* Free the storage.  */
-	      free ((char *) g);
+	      free (g);
 
 	      g = lastgoal == 0 ? goals : lastgoal->next;
 
@@ -1060,7 +1061,7 @@ touch_file (struct file *file)
       else
 	{
 	  struct stat statbuf;
-	  char buf;
+	  char buf = 'x';
           int e;
 
           EINTRLOOP (e, fstat (fd, &statbuf));
@@ -1190,10 +1191,10 @@ f_mtime (struct file *file, int search)
 
 	  /* free (file->name); */
 
-	  name = (char *) xmalloc (arlen + 1 + memlen + 2);
-	  bcopy (arname, name, arlen);
+	  name = xmalloc (arlen + 1 + memlen + 2);
+	  memcpy (name, arname, arlen);
 	  name[arlen] = '(';
-	  bcopy (memname, name + arlen + 1, memlen);
+	  memcpy (name + arlen + 1, memname, memlen);
 	  name[arlen + 1 + memlen] = ')';
 	  name[arlen + 1 + memlen + 1] = '\0';
 
