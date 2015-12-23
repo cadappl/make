@@ -379,6 +379,7 @@ case "$host" in
   *-*-cygwin*)
     AM_CONDITIONAL(CYGWINENV, true)
     cygwin_target_env=yes
+    AC_DEFINE([HAVE_DOS_PATHS], [1], [Use platform specific coding])
     ;;
   *-*-mingw32)
     AM_CONDITIONAL(WINDOWSENV, true)
