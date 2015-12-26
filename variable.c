@@ -1253,6 +1253,11 @@ parse_variable_definition (struct variable *v, char *line)
 	    flavor = f_simple;
 	    break;
 	  }
+#ifdef HAVE_DOS_PATHS
+	  /* should be c:/cygwin or d:\cygwin */
+	  else if ((*p == '/' || *p == '\\') && (p >= &line[2] && isalpha(p[-2])))
+	    continue;
+#endif
 	else
 	  /* A colon other than := is a rule line, not a variable defn.  */
 	  return 0;
