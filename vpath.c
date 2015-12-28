@@ -240,14 +240,21 @@ construct_vpath_list (char *pattern, char *dirpath)
 
       /* Find the end of this entry.  */
       v = p;
-      while (*p != '\0' && *p != PATH_SEPARATOR_CHAR
+      while (*p != '\0' &&
+#if defined(HAVE_DOS_PATHS)
+	     (*p != PATH_SEPARATOR_CHAR
+	      || (p == v + 1 && isalpha ((unsigned char) *v)
+	          && (p[1] == '/' || p[1] == '\\')))
+#else
+	     *p != PATH_SEPARATOR_CHAR
+#endif
 	     && !isblank ((unsigned char)*p))
 	++p;
 
       len = p - v;
       /* Make sure there's no trailing slash,
 	 but still allow "/" as a directory.  */
-#if defined(__MSDOS__) || defined(__EMX__)
+#if defined(__MSDOS__) || defined(__EMX__) || defined(HAVE_DOS_PATHS)
       /* We need also to leave alone a trailing slash in "d:/".  */
       if (len > 3 || (len > 1 && v[1] != ':'))
 #endif
